@@ -1,0 +1,10 @@
+services:
+  startlab-front:
+    build:
+      context: . # корень проекта
+      dockerfile: Dockerfile
+    image: vite-react-app:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=3000

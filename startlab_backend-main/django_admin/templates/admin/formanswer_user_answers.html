@@ -1,0 +1,206 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url 'admin:admin_panel_formanswer_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; <a href="{% url 'admin:formanswer_by_users' %}">Пользователи</a>
+&rsaquo; {{ title }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="results">
+    <h1>{{ title }}</h1>
+    <p><strong>Полный хеш:</strong> <code>{{ user_hash }}</code></p>
+    
+    {% if page_obj %}
+        <div class="results">
+            <table id="result_list">
+                <thead>
+                    <tr>
+                        <th scope="col" class="action-checkbox-column">
+                            <div class="text"><span>ID</span></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text"><span>Форма</span></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text"><span>Вопрос</span></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text"><span>Ответ</span></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text"><span>Дата создания</span></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text"><span>Действия</span></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for answer in page_obj %}
+                    <tr class="{% cycle 'row1' 'row2' %}">
+                        <td class="action-checkbox">{{ answer.id }}</td>
+                        <td class="field-form">
+                            <strong>{{ answer.form_question.form.name }}</strong>
+                        </td>
+                        <td class="field-question">
+                            {{ answer.form_question.question.question_text|truncatechars:100 }}
+                        </td>
+                        <td class="field-answer">
+                            {% if answer.answer_txt %}
+                                <div class="answer-text">
+                                    {{ answer.answer_txt|truncatechars:150 }}
+                                </div>
+                            {% else %}
+                                <span class="no-answer">Нет текстового ответа</span>
+                            {% endif %}
+                            {% if answer.answer_docx %}
+                                <div class="answer-docx">
+                                    <small>📄 Документ DOCX прикреплен</small>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="field-created_at">
+                            {{ answer.created_at|date:"d.m.Y H:i" }}
+                        </td>
+                        <td class="field-actions">
+                            <a href="{% url 'admin:admin_panel_formanswer_change' answer.id %}" 
+                               class="viewlink">Редактировать</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if page_obj.has_other_pages %}
+        <div class="paginator">
+            {% if page_obj.has_previous %}
+                <a href="?page=1" class="paginator-button">« первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="paginator-button">‹ предыдущая</a>
+            {% endif %}
+            
+            <span class="this-page">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="paginator-button">следующая ›</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="paginator-button">последняя »</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+    {% else %}
+        <div class="messagelist">
+            <div class="info">У этого пользователя нет ответов.</div>
+        </div>
+    {% endif %}
+    
+    <div class="actions">
+        <a href="{% url 'admin:formanswer_by_users' %}" class="button">← Вернуться к списку пользователей</a>
+        <a href="{% url 'admin:admin_panel_formanswer_changelist' %}" class="button">← Все ответы</a>
+    </div>
+</div>
+
+<style>
+.results table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.results th, .results td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+}
+
+.results th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.results tr:hover {
+    background-color: #f5f5f5;
+}
+
+.results code {
+    background-color: #f8f9fa;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 12px;
+    word-break: break-all;
+}
+
+.answer-text {
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.no-answer {
+    color: #666;
+    font-style: italic;
+}
+
+.answer-docx {
+    margin-top: 5px;
+    color: #007cba;
+}
+
+.paginator {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.paginator a, .paginator span {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 2px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.paginator a:hover {
+    background-color: #f5f5f5;
+}
+
+.paginator .this-page {
+    background-color: #007cba;
+    color: white;
+    border-color: #007cba;
+}
+
+.actions {
+    margin: 20px 0;
+}
+
+.actions .button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #007cba;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.actions .button:hover {
+    background-color: #005a87;
+}
+
+.field-answer {
+    max-width: 400px;
+}
+</style>
+{% endblock %}

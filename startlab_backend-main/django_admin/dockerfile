@@ -1,0 +1,30 @@
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential libpq-dev libjpeg62-turbo-dev zlib1g-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+COPY . /app
+
+RUN mkdir -p /app/media && \
+    mkdir -p /app/staticfiles
+
+WORKDIR /app
+
+EXPOSE 8001
+
+CMD ["/bin/sh", "-c", "\
+python scripts/create_db_and_tables.py && \
+python django_admin/manage.py migrate --noinput && \
+python django_admin/setup_admin.py && \
+python django_admin/manage.py collectstatic --noinput --clear && \
+python django_admin/manage.py runserver 0.0.0.0:8001 \
+"]

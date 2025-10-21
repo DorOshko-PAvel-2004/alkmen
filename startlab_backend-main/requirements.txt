@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+psycopg2-binary
+pydantic
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
+django
+django-cors-headers
+django-summernote
+Pillow
+python-docx
+whitenoise
+gunicorn
+python-docx
