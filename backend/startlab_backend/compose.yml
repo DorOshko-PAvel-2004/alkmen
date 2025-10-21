@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:15
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    env_file: .env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - app_net
+
+  api:
+    build:
+      context: .
+      dockerfile: app/dockerfile
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+      - ./media:/app/media
+    ports:
+      - "${FASTAPI_PORT}:8000"
+    networks:
+      - app_net
+
+  admin:
+    build:
+      context: .
+      dockerfile: django_admin/dockerfile
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+      - ./media:/app/django_admin/media
+      - ./staticfiles:/app/django_admin/staticfiles
+    ports:
+      - "80:8001"
+      - "8083:8001"
+    networks:
+      - app_net
+
+
+volumes:
+  db_data:
+
+networks:
+  app_net:
+    driver: bridge
+
+

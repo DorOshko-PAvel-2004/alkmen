@@ -1,0 +1,71 @@
+# =========================
+# bsuir.stacklevel.group
+# =========================
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name bsuir.stacklevel.group;
+
+    location / {
+        proxy_pass http://192.168.0.25:8081;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location ^~ /api/ {
+        proxy_pass http://192.168.0.25:8082/;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_set_header Upgrade           $http_upgrade;
+        proxy_set_header Connection        "upgrade";
+
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+    }
+
+    location ^~ /admin-parol/ {
+        proxy_pass http://192.168.0.25:8083;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_set_header Upgrade           $http_upgrade;
+        proxy_set_header Connection        "upgrade";
+
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+    }
+
+    location ^~ /summernote/ {
+        proxy_pass http://192.168.0.25:8083;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+    }
+
+    location ^~ /media/ {
+        proxy_pass http://192.168.0.25:8083;
+        proxy_set_header Host $host;
+        access_log off;
+    }
+
+    location ^~ /static/ {
+        proxy_pass http://192.168.0.25:8083;
+        proxy_set_header Host $host;
+        access_log off;
+    }
+}
