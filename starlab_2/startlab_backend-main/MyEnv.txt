@@ -1,0 +1,61 @@
+PROJECT_NAME=СТАРТЛАБ Backend
+PROJECT_DESCRIPTION=Backend API для конкурса инновационных проектов СТАРТЛАБ
+PROJECT_VERSION=1.0.0
+
+
+# Host ports
+FASTAPI_PORT=8082
+DJANGO_PORT=8083
+
+
+
+# Конфигурация базы данных
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/bsuir_starlab_clean
+
+# Настройки подключения к базе данных
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=bsuir_starlab_clean
+DB_USER=postgres
+DB_PASSWORD=1001101
+
+# Настройки пула соединений
+DB_POOL_SIZE=5
+DB_MAX_OVERFLOW=10
+DB_POOL_TIMEOUT=30
+DB_POOL_RECYCLE=3600
+
+# Настройки безопасности
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# Настройки сервера
+HOST=0.0.0.0  
+PORT=8082
+DEBUG=false
+RELOAD=true
+LOG_LEVEL=info
+WORKERS=1
+# CORS настройки
+ALLOWED_ORIGINS=http://bsuir.stacklevel.group
+
+DJANGO_SECRET_KEY=e9$v)32rsl$j3vce=&49=+^q9%(npg4dd1uqqt$8v%5e_r5c6t
+DJANGO_ALLOWED_HOSTS=bsuir.stacklevel.group,bsuir.backend.stacklevel.group,api,admin,localhost,192.168.0.25
+CSRF_TRUSTED_ORIGINS=http://bsuir.stacklevel.group
+DJANGO_STATIC_URL=/static/
+DJANGO_STATIC_ROOT=/app/django_admin/staticfiles
+DJANGO_MEDIA_URL=/media/
+DJANGO_MEDIA_ROOT=/app/django_admin/media
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@startlab.by
+DJANGO_SUPERUSER_PASSWORD=admin123
+
+ENVIRONMENT=development
+REACT_APP_API_BASE_URL=http://bsuir.stacklevel.group
+
+POSTGRES_DB=bsuir_starlab_clean
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=1001101
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+MEDIA_BASE_URL=http://bsuir.backend.stacklevel.group/media/

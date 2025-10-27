@@ -43,7 +43,7 @@ services:
       - ./media:/app/django_admin/media
       - ./staticfiles:/app/django_admin/staticfiles
     ports:
-      - "80:8001"
+      #- "80:8001"
       - "8083:8001"
     networks:
       - app_net
